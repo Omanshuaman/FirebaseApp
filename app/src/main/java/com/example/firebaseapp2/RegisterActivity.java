@@ -70,16 +70,24 @@ public class RegisterActivity extends AppCompatActivity {
                 String password = mPasswordEt.getText().toString().trim();
                 //validate
                 if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    //set error and focuss to email edittext
+                    //set error and focus to email edittext
                     mEmailEt.setError("Invalid Email");
                     mEmailEt.setFocusable(true);
                 } else if (password.length() < 6) {
-                    //set error and focuss to password edittext
+                    //set error and focus to password edittext
                     mPasswordEt.setError("Password length at least 6 characters");
                     mPasswordEt.setFocusable(true);
                 } else {
                     registerUser(email, password); //register the user
                 }
+            }
+        });
+        //handle login textview click listener
+        mHaveAccountTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                finish();
             }
         });
     }
@@ -96,7 +104,7 @@ public class RegisterActivity extends AppCompatActivity {
                             // Sign in success, dismiss dialog and start register activity
                             progressDialog.dismiss();
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(RegisterActivity.this, "Registered...\n"+user.getEmail(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Registered...\n" + user.getEmail(), Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(RegisterActivity.this, ProfileActivity.class));
                         } else {
                             // If sign in fails, display a message to the user.

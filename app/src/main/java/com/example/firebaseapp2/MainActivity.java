@@ -29,5 +29,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, RegisterActivity.class));
             }
         });
+        //handle login button click
+        mLoginBtn.setOnClickListener(v -> {
+            //start LoginActivity
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        });
     }
 }
