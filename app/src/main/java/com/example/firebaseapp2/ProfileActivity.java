@@ -52,6 +52,11 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
         }
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
     @Override
     protected void onStart() {
