@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
-    tools:context=".LoginActivity">
+    tools:context="com.example.simion.firebaseapp.LoginActivity">
 
 
     <!--TextView: Label Login-->
@@ -72,10 +72,10 @@
         android:id="@+id/recoverPassTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/loginBtn"
-        android:text="Forgot Password? Recover"
         android:textAlignment="center"
-        android:textColor="@color/white" />
+        android:text="Forgot Password? Recover"
+        android:layout_below="@id/loginBtn"
+        android:textColor="@color/colorBlack"/>
 
     <!--GoogleSignInBtn: Sign in with google account-->
     <com.google.android.gms.common.SignInButton
@@ -91,11 +91,11 @@
         android:id="@+id/nothave_accountTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="20dp"
         android:text="Not have account? Register"
         android:textAlignment="center"
-        android:textColor="@color/colorBlack" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/colorBlack"
+        android:layout_marginBottom="20dp"/>
 
 </RelativeLayout>
