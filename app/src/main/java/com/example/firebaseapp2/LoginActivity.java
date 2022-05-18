@@ -32,6 +32,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
@@ -69,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
                 .requestIdToken("1083483531484-m4ukgk2sbh7f99tr5ima6nds3qlf22j4.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         //In the onCreate() method, initialize the FirebaseAuth instance.
         mAuth = FirebaseAuth.getInstance();
@@ -172,10 +174,9 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         pd.dismiss();
-                        if (task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Email sent", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
+                        } else {
                             Toast.makeText(LoginActivity.this, "Failed...", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -184,10 +185,11 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
                 pd.dismiss();
                 //get and show proper error message
-                Toast.makeText(LoginActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
     private void loginUser(String email, String passw) {
         //show progresses dialog
         pd.setMessage("Logging In...");
@@ -202,7 +204,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             //user is logged in, so start LoginActivity
-                            startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
+                            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                             finish();
                         } else {
                             //dismiss progress dialog
@@ -228,6 +230,7 @@ public class LoginActivity extends AppCompatActivity {
         onBackPressed(); // go previous activity
         return super.onSupportNavigateUp();
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -241,11 +244,12 @@ public class LoginActivity extends AppCompatActivity {
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
-                Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 // ...
             }
         }
     }
+
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -257,11 +261,31 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
 
                             FirebaseUser user = mAuth.getCurrentUser();
-
+                            //if user is signing in first time then get and show user info from google account
+                            if (task.getResult().getAdditionalUserInfo().isNewUser()) {
+                                //Get user email and uid from auth
+                                String email = user.getEmail();
+                                String uid = user.getUid();
+                                //When user is registered store user info in firebase realtime database too
+                                //using HashMap
+                                HashMap<Object, String> hashMap = new HashMap<>();
+                                //put info in hashmap
+                                hashMap.put("email", email);
+                                hashMap.put("uid", uid);
+                                hashMap.put("name", ""); //will add later (e.g. edit profile)
+                                hashMap.put("image", ""); //will add later (e.g. edit profile)
+                                hashMap.put("cover", ""); //will add later (e.g. edit profile)
+                                //firebase database instance
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                //path to store user data named "Users"
+                                DatabaseReference reference = database.getReference("Users");
+                                //put data within hashmap in database
+                                reference.child(uid).setValue(hashMap);
+                            }
                             //show user email in toast
-                            Toast.makeText(LoginActivity.this, ""+user.getEmail(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "" + user.getEmail(), Toast.LENGTH_SHORT).show();
                             //go to profile activity after logged in
-                            startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
+                            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                             finish();
                             //updateUI(user);
                         } else {
@@ -275,7 +299,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 //get and show error message
-                Toast.makeText(LoginActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
