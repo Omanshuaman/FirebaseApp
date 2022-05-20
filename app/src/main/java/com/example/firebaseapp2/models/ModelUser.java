@@ -1,4 +1,4 @@
-package com.example.firebaseapp2;
+package com.example.firebaseapp2.models;
 
 public class ModelUser {
 
