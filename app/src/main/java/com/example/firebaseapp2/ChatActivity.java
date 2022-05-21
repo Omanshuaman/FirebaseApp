@@ -2,6 +2,7 @@ package com.example.firebaseapp2;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.firebaseapp2.adapters.AdapterChat;
+import com.example.firebaseapp2.models.ModelChat;
 import com.example.firebaseapp2.models.ModelUser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,11 +34,13 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class ChatActivity extends AppCompatActivity {
-    private static final String TAG ="FUCKK YOU" ;
+    private static final String TAG ="FUNK YOU" ;
     //views from xml
     Toolbar toolbar;
     RecyclerView recyclerView;
@@ -53,6 +58,12 @@ public class ChatActivity extends AppCompatActivity {
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference usersDbRef;
+    //for checking if use has seen message or not
+    ValueEventListener seenListener;
+    DatabaseReference userRefForSeen;
+
+    List<ModelChat> chatList;
+    AdapterChat adapterChat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +80,13 @@ public class ChatActivity extends AppCompatActivity {
         userStatusTv = findViewById(R.id.userStatusTv);
         messageEt = findViewById(R.id.messageEt);
         sendBtn = findViewById(R.id.sendBtn);
+
+        //Layout (LinearLayout) for RecyclerView
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setStackFromEnd(true);
+        //recyclerview properties
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         /*On clicking user from users list we have passed that user's UID using intent
          * So get that uid here to get the profile picture, name and start chat with that
@@ -127,7 +145,61 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 }
         });
+        readMessages();
+        seenMessage();
+
     }
+    private void seenMessage() {
+        userRefForSeen = FirebaseDatabase.getInstance().getReference("Chats");
+        seenListener = userRefForSeen.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    ModelChat chat = ds.getValue(ModelChat.class);
+                    if (chat.getReceiver().equals(myUid) && chat.getSender().equals(hisUid)) {
+                        HashMap<String, Object> hasSeenHashMap = new HashMap<>();
+                        hasSeenHashMap.put("isSeen", true);
+                        ds.getRef().updateChildren(hasSeenHashMap);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void readMessages() {
+        chatList = new ArrayList<>();
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Chats");
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                chatList.clear();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    ModelChat chat = ds.getValue(ModelChat.class);
+                    if (chat.getReceiver().equals(myUid) && chat.getSender().equals(hisUid) ||
+                            chat.getReceiver().equals(hisUid) && chat.getSender().equals(myUid)) {
+                        chatList.add(chat);
+                    }
+
+                    //adapter
+                    adapterChat = new AdapterChat(ChatActivity.this, chatList, hisImage);
+                    adapterChat.notifyDataSetChanged();
+                    //set adapter to recyclerview
+                    recyclerView.setAdapter(adapterChat);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     private void sendMessage(final String message) {
         /*"Chats" node will be created that will contain all chats
@@ -139,11 +211,14 @@ public class ChatActivity extends AppCompatActivity {
 
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        String timestamp = String.valueOf(System.currentTimeMillis());
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", myUid);
         hashMap.put("receiver", hisUid);
         hashMap.put("message", message);
+        hashMap.put("timestamp", timestamp);
+        hashMap.put("isSeen", false);
         Log.d(TAG, "sendMessage: " + myUid);
         Log.d(TAG, "sendMessage: " + hisUid);
 
@@ -172,7 +247,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        //hide searchview, add post, as we don't need it here
+        //hide searches, add post, as we don't need it here
         menu.findItem(R.id.action_search).setVisible(false);
 
         return super.onCreateOptionsMenu(menu);
@@ -195,4 +270,10 @@ public class ChatActivity extends AppCompatActivity {
         //set online
         super.onStart();
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        userRefForSeen.removeEventListener(seenListener);
+    }
+
 }
