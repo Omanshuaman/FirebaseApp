@@ -23,9 +23,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.firebaseapp2.adapters.AdapterChat;
 import com.example.firebaseapp2.models.ModelChat;
 import com.example.firebaseapp2.models.ModelUser;
+import com.example.firebaseapp2.notifications.APIService;
+import com.example.firebaseapp2.notifications.Client;
+import com.example.firebaseapp2.notifications.Data;
+import com.example.firebaseapp2.notifications.Response;
+import com.example.firebaseapp2.notifications.Sender;
+import com.example.firebaseapp2.notifications.Token;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,13 +43,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class ChatActivity extends AppCompatActivity {
     private static final String TAG = "FUNK YOU";
@@ -56,6 +73,8 @@ public class ChatActivity extends AppCompatActivity {
     String myUid;
     String hisImage;
 
+    APIService apiService;
+    boolean notify = false;
     //firebase auth
     FirebaseAuth firebaseAuth;
 
@@ -90,6 +109,8 @@ public class ChatActivity extends AppCompatActivity {
         //recyclerview properties
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        apiService = Client.getRetrofit("https://fcm.googleapis.com/").create(APIService.class);
 
         /*On clicking user from users list we have passed that user's UID using intent
          * So get that uid here to get the profile picture, name and start chat with that
@@ -155,6 +176,7 @@ public class ChatActivity extends AppCompatActivity {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                notify = true;
                 //get text from edit text
                 String message = messageEt.getText().toString().trim();
                 //check if text is empty or not
@@ -165,6 +187,8 @@ public class ChatActivity extends AppCompatActivity {
                     //text not empty
                     sendMessage(message);
                 }
+                //reset edittext after sending message
+                messageEt.setText("");
             }
         });
         //check edit text change listener
@@ -268,12 +292,65 @@ public class ChatActivity extends AppCompatActivity {
 
         databaseReference.child("Chats").push().setValue(hashMap);
 
-        //reset edittext after sending message
-        messageEt.setText("");
 
+        String msg = message;
+        final DatabaseReference database = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ModelUser user = dataSnapshot.getValue(ModelUser.class);
 
+                if (notify) {
+                    senNotification(hisUid, user.getName(), message);
+                }
+                notify = false;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
+    private void senNotification(final String hisUid, final String name, final String message) {
+        DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = allTokens.orderByKey().equalTo(hisUid);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Token token = ds.getValue(Token.class);
+                    Data data = new Data(
+                            ""+myUid,
+                            ""+name + ": " + message,
+                            "New Message",
+                            ""+hisUid,
+                            "ChatNotification",
+                            R.drawable.ic_default_img);
 
+                    Sender sender = new Sender(data, token.getToken());
+
+                    apiService.sendNotification(sender).enqueue(new Callback<Response>() {
+                        @Override
+                        public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                            Toast.makeText(ChatActivity.this, ""+response.message(), Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Response> call, Throwable t) {
+
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     private void checkUserStatus() {
         //get current user
         FirebaseUser user = firebaseAuth.getCurrentUser();
