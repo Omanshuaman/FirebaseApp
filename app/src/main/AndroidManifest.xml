@@ -14,9 +14,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirebaseApp2">
         <activity
+            android:name=".AddPostActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChatActivity"
-            android:theme="@style/AppThemeNo"
-        android:exported="false" />
+            android:exported="false"
+            android:theme="@style/AppThemeNo" />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
@@ -40,10 +43,9 @@
             android:name=".notifications.FirebaseMessaging"
             android:enabled="true"
             android:exported="true">
-        <intent-filter>
-            <action android:name="com.google.firebase.MESSAGING_EVENT" />
-        </intent-filter>
-
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
         </service>
     </application>
 

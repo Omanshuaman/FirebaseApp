@@ -542,87 +542,8 @@ public class ProfileFragment extends Fragment {
         //inflating menu
         inflater.inflate(R.menu.menu_main, menu);
 
-//        //SearchView
-//        MenuItem item = menu.findItem(R.id.action_search);
-//        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
-//
-//        //search listener
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String s) {
-//                //called when user press search button from keyboard
-//                //if search query is not empty then search
-//                if (!TextUtils.isEmpty(s.trim())) {
-//                    //search text contains text, search it
-//                    searchUsers(s);
-//                } else {
-//                    //search text empty, get all users
-//                    getAllUsers();
-//                }
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String s) {
-//                //called whenever user press any single letter
-//                //if search query is not empty then search
-//                if (!TextUtils.isEmpty(s.trim())) {
-//                    //search text contains text, search it
-//                    searchUsers(s);
-//                } else {
-//                    //search text empty, get all users
-//                    getAllUsers();
-//                }
-//                return false;
-//            }
-//        });
         super.onCreateOptionsMenu(menu, inflater);
     }
-//    private void searchUsers(final String query) {
-//
-//        //get current user
-//        final FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
-//        //get path of database named "Users" containing users info
-//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
-//        //get all data from path
-//        ref.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                userList.clear();
-//                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                    ModelUser modelUser = ds.getValue(ModelUser.class);
-//
-//                    /*Conditions to fulfil search:
-//                     * 1) User not current user
-//                     * 2) The user name or email contains text entered in SearchView (case insensitive)*/
-//
-//                    //get all searched users except currently signed in user
-//                    if (!modelUser.getUid().equals(fUser.getUid())) {
-//
-//                        if (modelUser.getName().toLowerCase().contains(query.toLowerCase()) ||
-//                                modelUser.getEmail().toLowerCase().contains(query.toLowerCase())) {
-//                            userList.add(modelUser);
-//                        }
-//
-//                    }
-//
-//                    //adapter
-//                    adapterUsers = new AdapterUsers(getActivity(), userList);
-//                    //refresh adapter
-//                    adapterUsers.notifyDataSetChanged();
-//                    //set adapter to recycler view
-//                    recyclerView.setAdapter(adapterUsers);
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
-
 
     /*handle menu item clicks*/
     @Override
@@ -633,7 +554,9 @@ public class ProfileFragment extends Fragment {
             firebaseAuth.signOut();
             checkUserStatus();
         }
-
+        if (id == R.id.action_add_post){
+            startActivity(new Intent(getActivity(), AddPostActivity.class));
+        }
         return super.onOptionsItemSelected(item);
     }
 }
