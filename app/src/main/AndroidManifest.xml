@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirebaseApp2">
         <activity
+            android:name=".ThereProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddPostActivity"
             android:exported="false" />
         <activity

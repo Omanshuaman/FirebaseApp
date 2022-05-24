@@ -385,8 +385,9 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        //hide searches, add post, as we don't need it here
+        //hide searchview, add post, as we don't need it here
         menu.findItem(R.id.action_search).setVisible(false);
+        menu.findItem(R.id.action_add_post).setVisible(false);
 
         return super.onCreateOptionsMenu(menu);
     }

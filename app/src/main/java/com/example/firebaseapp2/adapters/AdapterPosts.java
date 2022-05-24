@@ -2,6 +2,7 @@ package com.example.firebaseapp2.adapters;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firebaseapp2.R;
+import com.example.firebaseapp2.ThereProfileActivity;
 import com.example.firebaseapp2.models.ModelPost;
 import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
@@ -131,6 +133,16 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
 
         });
 
+        myHolder.profileLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*click to go to ThereProfileActivity with uid, this uid is of clicked user
+                 * which will be used to show user specific data/posts*/
+                Intent intent = new Intent(context, ThereProfileActivity.class);
+                intent.putExtra("uid",uid);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
