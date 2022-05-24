@@ -183,14 +183,14 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                     //delete is clicked
                     beginDelete(pId, pImage);
                 }
-//                else if (id==1){
-//                    //Edit is clicked
-//                    //start AddPostActivity with key "editPost" and the id of the post clicked
-//                    Intent intent = new Intent(context, AddPostActivity.class);
-//                    intent.putExtra("key", "editPost");
-//                    intent.putExtra("editPostId", pId);
-//                    context.startActivity(intent);
-//                }
+                else if (id==1){
+                    //Edit is clicked
+                    //start AddPostActivity with key "editPost" and the id of the post clicked
+                    Intent intent = new Intent(context, AddPostActivity.class);
+                    intent.putExtra("key", "editPost");
+                    intent.putExtra("editPostId", pId);
+                    context.startActivity(intent);
+                }
 //                else if (id==2){
 //                    //start PostDetailActivity
 //                    Intent intent = new Intent(context, PostDetailActivity.class);
