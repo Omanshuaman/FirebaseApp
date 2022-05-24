@@ -515,14 +515,11 @@ public class ProfileFragment extends Fragment {
                             results.put(profileOrCoverPhoto, downloadUri.toString());
 
                             databaseReference.child(user.getUid()).updateChildren(results)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            //url in database of user is added successfully
-                                            //dismiss progress bar
-                                            pd.dismiss();
-                                            Toast.makeText(getActivity(), "Image Updated...", Toast.LENGTH_SHORT).show();
-                                        }
+                                    .addOnSuccessListener(aVoid -> {
+                                        //url in database of user is added successfully
+                                        //dismiss progress bar
+                                        pd.dismiss();
+                                        Toast.makeText(getActivity(), "Image Updated...", Toast.LENGTH_SHORT).show();
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
