@@ -3,6 +3,7 @@ package com.example.firebaseapp2;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
@@ -23,6 +24,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.firebaseapp2.adapters.AdapterComments;
+import com.example.firebaseapp2.models.ModelComment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,8 +40,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class PostDetailActivity extends AppCompatActivity {
@@ -61,6 +66,8 @@ public class PostDetailActivity extends AppCompatActivity {
     LinearLayout profileLayout;
     RecyclerView recyclerView;
 
+    List<ModelComment> commentList;
+    AdapterComments adapterComments;
 
     //add comments views
     EditText commentEt;
@@ -112,6 +119,8 @@ public class PostDetailActivity extends AppCompatActivity {
         //set subtitle of actionbar
         actionBar.setSubtitle("SignedIn as: " + myEmail);
 
+        loadComments();
+
         //send comment button click
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,7 +144,43 @@ public class PostDetailActivity extends AppCompatActivity {
         });
 
     }
+    private void loadComments() {
+        //layout(Linear) for recyclerview
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        //set layout to recyclerview
+        recyclerView.setLayoutManager(layoutManager);
 
+        //init comments list
+        commentList = new ArrayList<>();
+
+        //path of the post, to get it's comments
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts").child(postId).child("Comments");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                commentList.clear();
+                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                    ModelComment modelComment = ds.getValue(ModelComment.class);
+
+                    commentList.add(modelComment);
+
+                    //pass myUid and postId as parameter of constructor of Comment Adapter
+
+                    //setup adapter
+                    adapterComments = new AdapterComments(getApplicationContext(), commentList, myUid, postId);
+                    //set adapter
+                    recyclerView.setAdapter(adapterComments);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
     private void showMoreOptions() {
         //creating popup menu currently having option Delete, we will add more options later
         PopupMenu popupMenu = new PopupMenu(this, moreBtn, Gravity.END);

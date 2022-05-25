@@ -13,7 +13,7 @@
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_dashboard.xml" value="0.2" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_login.xml" value="0.2" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_main.xml" value="0.1391304347826087" />
-        <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_post_detail.xml" value="0.2" />
+        <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_post_detail.xml" value="0.16" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_profile.xml" value="0.1" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_register.xml" value="0.2" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_there_profile.xml" value="0.1" />
@@ -23,6 +23,7 @@
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/fragment_users.xml" value="0.1" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/row_chat_left.xml" value="0.2" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/row_chat_right.xml" value="0.264" />
+        <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/row_comments.xml" value="0.264" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/row_posts.xml" value="0.264" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/row_users.xml" value="0.264" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/menu/menu.xml" value="0.1" />
