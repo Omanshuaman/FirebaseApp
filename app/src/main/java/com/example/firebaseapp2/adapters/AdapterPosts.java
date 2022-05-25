@@ -23,6 +23,7 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firebaseapp2.AddPostActivity;
+import com.example.firebaseapp2.PostDetailActivity;
 import com.example.firebaseapp2.R;
 import com.example.firebaseapp2.ThereProfileActivity;
 import com.example.firebaseapp2.models.ModelPost;
@@ -85,6 +86,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         final String pImage = postList.get(i).getpImage();
         String pTimeStamp = postList.get(i).getpTime();
         String pLikes = postList.get(i).getpLikes(); //contains total number of likes for a post
+        String pComments = postList.get(i).getpComments(); //contains total number of likes for a post
 
         //convert timestamp to dd/mm/yyyy hh:mm am/pm
         Calendar calendar = Calendar.getInstance(Locale.getDefault());
@@ -97,6 +99,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         myHolder.pTitleTv.setText(pTitle);
         myHolder.pDescriptionTv.setText(pDescription);
         myHolder.pLikesTv.setText(pLikes + " Likes"); //e.g. 100 Likes
+        myHolder.pCommentsTv.setText(pComments +" Comments"); //e.g. 100 Likes
+
         //set likes for each post
         setLikes(myHolder, pId);
         //set user dp
@@ -171,9 +175,11 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         myHolder.commentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "comment", Toast.LENGTH_SHORT).show();
+                //start PostDetailActivity
+                Intent intent = new Intent(context, PostDetailActivity.class);
+                intent.putExtra("postId", pId); //will get detail of post using this id, its id of the post clicked
+                context.startActivity(intent);
             }
-
         });
         myHolder.shareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,12 +256,12 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                     intent.putExtra("editPostId", pId);
                     context.startActivity(intent);
                 }
-//                else if (id==2){
-//                    //start PostDetailActivity
-//                    Intent intent = new Intent(context, PostDetailActivity.class);
-//                    intent.putExtra("postId", pId); //will get detail of post using this id, its id of the post clicked
-//                    context.startActivity(intent);
-//                }
+                else if (id==2){
+                    //start PostDetailActivity
+                    Intent intent = new Intent(context, PostDetailActivity.class);
+                    intent.putExtra("postId", pId); //will get detail of post using this id, its id of the post clicked
+                    context.startActivity(intent);
+                }
                 return false;
             }
         });
@@ -372,6 +378,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             pTitleTv = itemView.findViewById(R.id.pTitleTv);
             pDescriptionTv = itemView.findViewById(R.id.pDescriptionTv);
             pLikesTv = itemView.findViewById(R.id.pLikesTv);
+            pCommentsTv = itemView.findViewById(R.id.pCommentsTv);
             moreBtn = itemView.findViewById(R.id.moreBtn);
             likeBtn = itemView.findViewById(R.id.likeBtn);
             commentBtn = itemView.findViewById(R.id.commentBtn);
