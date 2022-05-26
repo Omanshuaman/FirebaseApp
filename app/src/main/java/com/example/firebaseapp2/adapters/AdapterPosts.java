@@ -4,6 +4,9 @@ package com.example.firebaseapp2.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firebaseapp2.AddPostActivity;
@@ -40,6 +44,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -99,7 +105,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         myHolder.pTitleTv.setText(pTitle);
         myHolder.pDescriptionTv.setText(pDescription);
         myHolder.pLikesTv.setText(pLikes + " Likes"); //e.g. 100 Likes
-        myHolder.pCommentsTv.setText(pComments +" Comments"); //e.g. 100 Likes
+        myHolder.pCommentsTv.setText(pComments + " Comments"); //e.g. 100 Likes
 
         //set likes for each post
         setLikes(myHolder, pId);
@@ -184,8 +190,21 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         myHolder.shareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            }
+                /*some posts contains only text, and some contains image and text so,
+        we will handle them both*/
+                //get image from imageview
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) myHolder.pImageIv.getDrawable();
+                if (bitmapDrawable == null) {
+                    //post without image
+                    shareTextOnly(pTitle, pDescription);
+                } else {
+                    //post with image
 
+                    //convert image to bitmap
+                    Bitmap bitmap = bitmapDrawable.getBitmap();
+                    shareImageAndText(pTitle, pDescription, bitmap);
+                }
+            }
         });
 
         myHolder.profileLayout.setOnClickListener(new View.OnClickListener() {
@@ -198,6 +217,55 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                 context.startActivity(intent);
             }
         });
+    }
+
+    private void shareTextOnly(String pTitle, String pDescription) {
+        //concatenate title and description to share
+        String shareBody = pTitle + "\n" + pDescription;
+
+        //share intent
+        Intent sIntent = new Intent(Intent.ACTION_SEND);
+        sIntent.setType("text/plain");
+        sIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here"); //in case you share via an email app
+        sIntent.putExtra(Intent.EXTRA_TEXT, shareBody); //text to share
+        context.startActivity(Intent.createChooser(sIntent, "Share Via")); //message to show in share dialog
+
+    }
+
+    private void shareImageAndText(String pTitle, String pDescription, Bitmap bitmap) {
+        //concatenate title and description to share
+        String shareBody = pTitle + "\n" + pDescription;
+
+        //first we will save this image in cache, get the saved image uri
+        Uri uri = saveImageToShare(bitmap);
+
+        //share intent
+        Intent sIntent = new Intent(Intent.ACTION_SEND);
+        sIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        sIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        sIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here");
+        sIntent.setType("image/png");
+        context.startActivity(Intent.createChooser(sIntent, "Share Via"));
+    }
+
+    private Uri saveImageToShare(Bitmap bitmap) {
+        File imageFolder = new File(context.getCacheDir(), "images");
+        Uri uri = null;
+        try {
+            imageFolder.mkdirs(); //create if not exists
+            File file = new File(imageFolder, "shared_image.png");
+
+            FileOutputStream stream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
+            stream.flush();
+            stream.close();
+            uri = FileProvider.getUriForFile(context, "com.example.firebaseapp2.fileprovider",
+                    file);
+        } catch (Exception e) {
+            Toast.makeText(context, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+        }
+        return uri;
     }
 
     private void setLikes(final MyHolder holder, final String postKey) {
@@ -255,8 +323,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                     intent.putExtra("key", "editPost");
                     intent.putExtra("editPostId", pId);
                     context.startActivity(intent);
-                }
-                else if (id==2){
+                } else if (id == 2) {
                     //start PostDetailActivity
                     Intent intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("postId", pId); //will get detail of post using this id, its id of the post clicked
