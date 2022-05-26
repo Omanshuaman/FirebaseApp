@@ -20,19 +20,19 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.android.volley.Response;
 
 import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.firebaseapp2.adapters.AdapterChat;
 import com.example.firebaseapp2.models.ModelChat;
 import com.example.firebaseapp2.models.ModelUser;
-import com.example.firebaseapp2.notifications.APIService;
-import com.example.firebaseapp2.notifications.Client;
 import com.example.firebaseapp2.notifications.Data;
-import com.example.firebaseapp2.notifications.Response;
 import com.example.firebaseapp2.notifications.Sender;
 import com.example.firebaseapp2.notifications.Token;
 import com.google.firebase.auth.FirebaseAuth;
@@ -56,8 +56,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import retrofit2.Call;
-import retrofit2.Callback;
 
 public class ChatActivity extends AppCompatActivity {
     private static final String TAG = "FUNK YOU";
@@ -73,8 +71,10 @@ public class ChatActivity extends AppCompatActivity {
     String myUid;
     String hisImage;
 
-    APIService apiService;
-    boolean notify = false;
+    //volley request queue for notification
+    private RequestQueue requestQueue;
+
+    private boolean notify = false;
     //firebase auth
     FirebaseAuth firebaseAuth;
 
@@ -103,6 +103,8 @@ public class ChatActivity extends AppCompatActivity {
         messageEt = findViewById(R.id.messageEt);
         sendBtn = findViewById(R.id.sendBtn);
 
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
+
         //Layout (LinearLayout) for RecyclerView
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
@@ -110,7 +112,6 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        apiService = Client.getRetrofit("https://fcm.googleapis.com/").create(APIService.class);
 
         /*On clicking user from users list we have passed that user's UID using intent
          * So get that uid here to get the profile picture, name and start chat with that
@@ -365,17 +366,40 @@ public class ChatActivity extends AppCompatActivity {
 
                     Sender sender = new Sender(data, token.getToken());
 
-                    apiService.sendNotification(sender).enqueue(new Callback<Response>() {
-                        @Override
-                        public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                            Toast.makeText(ChatActivity.this, ""+response.message(), Toast.LENGTH_SHORT).show();
-                        }
+                    //fcm json object request
+                    try {
+                        JSONObject senderJsonObj = new JSONObject(new Gson().toJson(sender));
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", senderJsonObj,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        //response of the request
+                                        Log.d("JSON_RESPONSE", "onResponse: "+response.toString());
 
-                        @Override
-                        public void onFailure(Call<Response> call, Throwable t) {
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d("JSON_RESPONSE", "onResponse: "+error.toString());
+                            }
+                        }){
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                //put params
+                                Map<String, String> headers = new HashMap<>();
+                                headers.put("Content-Type", "application/json");
+                                headers.put("Authorization", "key=AAAA_ESmqNw:APA91bFQI_TCzMhKGq2wuX7UFK-V9rxZh2_Db6O3P87WybjvRIt5olovm-67QpDV64N-eTOrTOTAHx-RixyCqSkW5Hh5ZSecjB_voOrAJqusLfoXhlOc6uyxCCEs82D396XraHWQd7qN");
 
-                        }
-                    });
+                                return headers;
+                            }
+                        };
+
+                        //add this request to queue
+                        requestQueue.add(jsonObjectRequest);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 }
             }
