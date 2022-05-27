@@ -11,7 +11,7 @@
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/drawable/circle_online.xml" value="0.1" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/drawable/editextstyle.xml" value="0.1" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_add_post.xml" value="0.16" />
-        <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_chat.xml" value="0.16" />
+        <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_chat.xml" value="0.1" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_dashboard.xml" value="0.2" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_login.xml" value="0.2" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/activity_main.xml" value="0.1391304347826087" />
@@ -29,7 +29,7 @@
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/row_chatlist.xml" value="0.1" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/row_comments.xml" value="0.264" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/row_posts.xml" value="0.264" />
-        <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/row_users.xml" value="0.264" />
+        <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/layout/row_users.xml" value="0.1" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/menu/menu.xml" value="0.1" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/menu/menu_main.xml" value="0.1" />
         <entry key="..\:/Users/omans/AndroidStudioProjects/FirebaseApp2/app/src/main/res/menu/menu_nav.xml" value="0.16" />

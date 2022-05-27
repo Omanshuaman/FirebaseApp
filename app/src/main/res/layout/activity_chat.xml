@@ -14,40 +14,56 @@
         android:background="@color/colorPrimaryDark"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <com.blogspot.atifsoftwares.circularimageview.CircularImageView
-            android:id="@+id/proifleIv"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_default"
-            app:c_background_color="@color/colorPrimaryDark" />
-
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <!--Receiver name-->
-            <TextView
-                android:id="@+id/nameTv"
-                android:layout_width="match_parent"
+            android:orientation="horizontal">
+            <!--Receiver profile picture-->
+            <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+                android:id="@+id/proifleIv"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_default"
+                app:c_background_color="@color/colorPrimaryDark" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="His Name"
-                android:textColor="@color/colorWhite"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-            <!--Receiver status i.e. online or offline
-            will implement later-->
-            <TextView
-                android:id="@+id/userStatusTv"
-                android:layout_width="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <!--Receiver name-->
+                <TextView
+                    android:id="@+id/nameTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="His Name"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+                <!--Receiver status i.e. online or offline
+                will implement later-->
+                <TextView
+                    android:id="@+id/userStatusTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="online"
+                    android:textColor="@color/colorWhite" />
+            </LinearLayout>
+            <!--Add icons to indicate blocked/unblocked-->
+            <ImageView
+                android:id="@+id/blockIv"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="online"
-                android:textColor="@color/colorWhite" />
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/ic_unblocked_green" />
+
         </LinearLayout>
+
     </androidx.appcompat.widget.Toolbar>
 
     <!--RecyclerView-->
@@ -73,7 +89,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@null"
-            android:src="@drawable/ic_attach_black"/>
+            android:src="@drawable/ic_attach_black" />
 
         <!--EditText: input message-->
         <EditText
