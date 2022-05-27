@@ -73,6 +73,22 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
         cal.setTimeInMillis(Long.parseLong(timeStamp));
         String dateTime = DateFormat.format("dd/MM/yyyy hh:mm aa", cal).toString();
 
+
+        if ("text".equalsIgnoreCase(type)) {
+            //if (type.equals("text")){
+            //text message
+            myHolder.messageTv.setVisibility(View.VISIBLE);
+            myHolder.messageIv.setVisibility(View.GONE);
+
+            myHolder.messageTv.setText(message);
+        } else {
+            //image message
+            myHolder.messageTv.setVisibility(View.GONE);
+            myHolder.messageIv.setVisibility(View.VISIBLE);
+
+            Picasso.get().load(message).placeholder(R.drawable.ic_image_black).into(myHolder.messageIv);
+        }
+
         //set data
         myHolder.messageTv.setText(message);
         myHolder.timeTv.setText(dateTime);
@@ -118,6 +134,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
         }
 
     }
+
     private void deleteMessage(int position) {
         final String myUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -133,11 +150,11 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     /*if you want to allow sender to delete only his message then
                     compare sender value with current user's uid
                     if they match means its the message of sender that is trying to delete*/
-                    if (ds.child("sender").getValue().equals(myUID)){
+                    if (ds.child("sender").getValue().equals(myUID)) {
                         /*We can do one of two things here
                          * 1) Remove the message from Chats
                          * 2) Set the value of message "This message was deleted..."
@@ -152,8 +169,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
                         ds.getRef().updateChildren(hashMap);
 
                         Toast.makeText(context, "message deleted...", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                    } else {
                         Toast.makeText(context, "You can delete only your messages...", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -165,6 +181,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
             }
         });
     }
+
     @Override
     public int getItemCount() {
         return chatList.size();
@@ -195,6 +212,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
             //init views
             profileIv = itemView.findViewById(R.id.profileIv);
             messageTv = itemView.findViewById(R.id.messageTv);
+            messageIv = itemView.findViewById(R.id.messageIv);
             timeTv = itemView.findViewById(R.id.timeTv);
             isSeenTv = itemView.findViewById(R.id.isSeenTv);
             messageLAyout = itemView.findViewById(R.id.messageLayout);

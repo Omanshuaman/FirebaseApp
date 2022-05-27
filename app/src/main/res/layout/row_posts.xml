@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="COMMENT"
-                android:drawableLeft="@drawable/ic_comment_black"
+                android:drawableLeft="@drawable/ic_comments_black"
                 android:background="@color/colorWhite"
                 android:drawablePadding="5dp" />
 
