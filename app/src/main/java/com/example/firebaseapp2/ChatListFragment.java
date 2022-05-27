@@ -175,22 +175,6 @@ public class ChatListFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    /*inflate options menu*/
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //inflating menu
-        inflater.inflate(R.menu.menu_main, menu);
-
-        //hide addpost icon from this fragment
-        menu.findItem(R.id.action_add_post).setVisible(false);
-
-        //SearchView
-        MenuItem item = menu.findItem(R.id.action_search);
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-
     /*handle menu item clicks*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -200,7 +184,12 @@ public class ChatListFragment extends Fragment {
             firebaseAuth.signOut();
             checkUserStatus();
         }
+        else if (id==R.id.action_settings){
+            //go to settings activity
+            startActivity(new Intent(getActivity(), SettingsActivity.class));
+        }
 
         return super.onOptionsItemSelected(item);
     }
+
 }

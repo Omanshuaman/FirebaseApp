@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirebaseApp2">
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".PostDetailActivity"
             android:exported="false" />
         <activity
@@ -56,7 +59,7 @@
         <!--
 Set the android:exported attribute to false;
         the FileProvider does not need to be public.
-       -->
+        -->
         <!--
  Set the android:grantUriPermissions attribute to true,
              to allow you to grant temporary access to files.
