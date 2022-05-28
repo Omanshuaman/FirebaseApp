@@ -309,7 +309,7 @@ public class ChatActivity extends AppCompatActivity {
         //block the user, by adding uid to current user's "BlockedUsers" node
 
 
-        //put values in hasmap to put in db
+        //put values in hashmap to put in db
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("uid", hisUid);
 
