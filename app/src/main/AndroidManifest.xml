@@ -7,13 +7,16 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="com.example.firebaseapp2.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/firebase_logo"
         android:label="@string/app_name"
         android:roundIcon="@drawable/firebase_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".PostLikedByActivity"
+            android:exported="false" />
         <activity
             android:name=".SettingsActivity"
             android:exported="false" />
@@ -44,7 +47,6 @@
 
                 <data android:mimeType="text/plain" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".ChatActivity"

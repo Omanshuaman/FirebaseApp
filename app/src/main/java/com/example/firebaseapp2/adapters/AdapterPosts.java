@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firebaseapp2.AddPostActivity;
 import com.example.firebaseapp2.PostDetailActivity;
+import com.example.firebaseapp2.PostLikedByActivity;
 import com.example.firebaseapp2.R;
 import com.example.firebaseapp2.ThereProfileActivity;
 import com.example.firebaseapp2.models.ModelPost;
@@ -217,6 +218,16 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                  * which will be used to show user specific data/posts*/
                 Intent intent = new Intent(context, ThereProfileActivity.class);
                 intent.putExtra("uid", uid);
+                context.startActivity(intent);
+            }
+        });
+
+        //click like count to start PostLikedByActiivty, and pass the post id
+        myHolder.pLikesTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, PostLikedByActivity.class);
+                intent.putExtra("postId", pId);
                 context.startActivity(intent);
             }
         });
