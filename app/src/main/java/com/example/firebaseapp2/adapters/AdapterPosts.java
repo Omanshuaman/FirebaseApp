@@ -47,6 +47,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -166,6 +167,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                                 likesRef.child(postIde).child(myUid).setValue("Liked"); //set any value
                                 mProcessLike = false;
 
+                                addToHisNotifications(""+uid, ""+pId, "Liked your post");
+
                             }
                         }
                     }
@@ -218,7 +221,33 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             }
         });
     }
+    private void addToHisNotifications(String hisUid, String pId, String notification){
+        //timestamp for time and notification id
+        String timestamp = ""+System.currentTimeMillis();
 
+        //data to put in notification in firebase
+        HashMap<Object, String> hashMap = new HashMap<>();
+        hashMap.put("pId", pId);
+        hashMap.put("timestamp", timestamp);
+        hashMap.put("pUid", hisUid);
+        hashMap.put("notification", notification);
+        hashMap.put("sUid", myUid);
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.child(hisUid).child("Notifications").child(timestamp).setValue(hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        //added successfully
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //failed
+                    }
+                });
+    }
     private void shareTextOnly(String pTitle, String pDescription) {
         //concatenate title and description to share
         String shareBody = pTitle + "\n" + pDescription;
