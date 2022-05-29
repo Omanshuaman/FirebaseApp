@@ -1,4 +1,4 @@
-package com.example.firebaseapp2;
+package com.example.firebaseapp2.fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -36,6 +36,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.firebaseapp2.AddPostActivity;
+import com.example.firebaseapp2.MainActivity;
+import com.example.firebaseapp2.R;
+import com.example.firebaseapp2.SettingsActivity;
 import com.example.firebaseapp2.adapters.AdapterPosts;
 import com.example.firebaseapp2.models.ModelPost;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -833,7 +837,8 @@ public class ProfileFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //inflating menu
         inflater.inflate(R.menu.menu_main, menu);
-
+        //hide some options
+        menu.findItem(R.id.action_create_group).setVisible(false);
 
         MenuItem item = menu.findItem(R.id.action_search);
         //v7 searchview ot search user specific posts

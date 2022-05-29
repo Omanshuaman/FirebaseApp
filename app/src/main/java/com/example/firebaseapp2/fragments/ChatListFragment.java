@@ -1,4 +1,4 @@
-package com.example.firebaseapp2;
+package com.example.firebaseapp2.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.firebaseapp2.GroupCreateActivity;
+import com.example.firebaseapp2.MainActivity;
+import com.example.firebaseapp2.R;
+import com.example.firebaseapp2.SettingsActivity;
 import com.example.firebaseapp2.adapters.AdapterChatlist;
 import com.example.firebaseapp2.models.ModelChat;
 import com.example.firebaseapp2.models.ModelChatlist;
@@ -136,12 +140,12 @@ public class ChatListFragment extends Fragment {
                                     chat.getSender().equals(currentUser.getUid())) {
 //                        //instead of displaying url in message show "sent photo"
 
-                        if("image".equalsIgnoreCase(chat.getType())){
-                     //   if (chat.getType().equals("image")) {
+                        if ("image".equalsIgnoreCase(chat.getType())) {
+                            //   if (chat.getType().equals("image")) {
                             theLastMessage = "Sent a photo";
                         } else {
-                           theLastMessage = chat.getMessage();
-                       }
+                            theLastMessage = chat.getMessage();
+                        }
                     }
                 }
                 adapterChatlist.setLastMessageMap(userId, theLastMessage);
@@ -183,12 +187,13 @@ public class ChatListFragment extends Fragment {
         if (id == R.id.action_logout) {
             firebaseAuth.signOut();
             checkUserStatus();
-        }
-        else if (id==R.id.action_settings){
+        } else if (id == R.id.action_settings) {
             //go to settings activity
             startActivity(new Intent(getActivity(), SettingsActivity.class));
+        } else if (id == R.id.action_create_group) {
+            //go to GroupCreateActivity activity
+            startActivity(new Intent(getActivity(), GroupCreateActivity.class));
         }
-
         return super.onOptionsItemSelected(item);
     }
 

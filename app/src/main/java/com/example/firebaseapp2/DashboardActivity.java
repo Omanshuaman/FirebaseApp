@@ -11,6 +11,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.firebaseapp2.fragments.ChatListFragment;
+import com.example.firebaseapp2.fragments.HomeFragment;
+import com.example.firebaseapp2.fragments.NotificationsFragment;
+import com.example.firebaseapp2.fragments.ProfileFragment;
+import com.example.firebaseapp2.fragments.UsersFragment;
 import com.example.firebaseapp2.notifications.Token;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

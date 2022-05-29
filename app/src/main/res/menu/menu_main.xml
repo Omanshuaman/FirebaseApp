@@ -21,4 +21,9 @@
         app:showAsAction="always"
         android:icon="@drawable/ic_add_white"/>
 
+    <!--Show this option in ChatsFragment, UsersFragment and hide from others-->
+    <item android:id="@+id/action_create_group"
+        android:title="Create Group"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_creategroup_white" />
 </menu>

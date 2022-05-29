@@ -1,4 +1,4 @@
-package com.example.firebaseapp2;
+package com.example.firebaseapp2.fragments;
 
 import android.os.Bundle;
 
@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.firebaseapp2.R;
 import com.example.firebaseapp2.adapters.AdapterNotification;
 import com.example.firebaseapp2.models.ModelNotification;
 import com.google.firebase.auth.FirebaseAuth;
