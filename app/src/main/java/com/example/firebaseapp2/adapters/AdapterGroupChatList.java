@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.firebaseapp2.GroupChatActivity;
 import com.example.firebaseapp2.R;
 import com.example.firebaseapp2.models.ModelGroupChatList;
 import com.google.firebase.database.DataSnapshot;
@@ -74,7 +75,10 @@ public class AdapterGroupChatList extends RecyclerView.Adapter<AdapterGroupChatL
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //open group chat
+                Intent intent = new Intent(context, GroupChatActivity.class);
+                intent.putExtra("groupId", groupId);
+                context.startActivity(intent);
             }
         });
 
