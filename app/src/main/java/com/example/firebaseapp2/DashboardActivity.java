@@ -3,11 +3,13 @@ package com.example.firebaseapp2;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -31,7 +33,10 @@ public class DashboardActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
 
     ActionBar actionBar;
+
     String mUID;
+
+    private  BottomNavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +49,7 @@ public class DashboardActivity extends AppCompatActivity {
         //init
         firebaseAuth = FirebaseAuth.getInstance();
         //bottom navigation
-        BottomNavigationView navigationView = findViewById(R.id.navigation);
+        navigationView = findViewById(R.id.navigation);
         navigationView.setOnNavigationItemSelectedListener(selectedListener);
 
         //home fragment transaction (default, on star)
@@ -58,11 +63,13 @@ public class DashboardActivity extends AppCompatActivity {
 
 
     }
+
     @Override
     protected void onResume() {
         checkUserStatus();
         super.onResume();
     }
+
     public void updateToken(Task<String> token) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Tokens");
         Token mToken = new Token(token);
@@ -107,19 +114,54 @@ public class DashboardActivity extends AppCompatActivity {
                             ft4.replace(R.id.content, fragment4, "");
                             ft4.commit();
                             return true;
-                        case R.id.nav_notification:
-                            //users fragment transaction
-                            actionBar.setTitle("Notifications");//change actionbar title
-                            NotificationsFragment fragment5 = new NotificationsFragment();
-                            FragmentTransaction ft5 = getSupportFragmentManager().beginTransaction();
-                            ft5.replace(R.id.content, fragment5, "");
-                            ft5.commit();
+                        case R.id.nav_more:
+                            showMoreOptions();
                             return true;
                     }
 
                     return false;
                 }
             };
+
+    private void showMoreOptions() {
+        //popup menu to show more options
+      //  PopupMenu popup = new PopupMenu(getActivity(), menuItemView);
+
+        PopupMenu popupMenu = new PopupMenu(this, navigationView, Gravity.END);
+        //items to show in menu
+        popupMenu.getMenu().add(Menu.NONE, 0, 0, "Notifications");
+        popupMenu.getMenu().add(Menu.NONE, 1, 0, "Group Chats");
+
+        //menu clicks
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int id = item.getItemId();
+                if (id == 0) {
+                    //notifications clicked
+
+                    //Notifications fragment transaction
+                    actionBar.setTitle("Notifications");//change actionbar title
+                    NotificationsFragment fragment5 = new NotificationsFragment();
+                    FragmentTransaction ft5 = getSupportFragmentManager().beginTransaction();
+                    ft5.replace(R.id.content, fragment5, "");
+                    ft5.commit();
+                } else if (id == 1) {
+                    //group chats clicked
+
+                    //Notifications fragment transaction
+                    actionBar.setTitle("Group Chats");//change actionbar title
+                    GroupChatsFragment fragment6 = new GroupChatsFragment();
+                    FragmentTransaction ft6 = getSupportFragmentManager().beginTransaction();
+                    ft6.replace(R.id.content, fragment6, "");
+                    ft6.commit();
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
+    }
+
     private void checkUserStatus() {
         //get current user
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -141,6 +183,7 @@ public class DashboardActivity extends AppCompatActivity {
             finish();
         }
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -154,24 +197,4 @@ public class DashboardActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    /*inflate options menu*/
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //inflating menu
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    /*handle menu item clicks*/
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        //get item id
-        int id = item.getItemId();
-        if (id == R.id.action_logout) {
-            firebaseAuth.signOut();
-            checkUserStatus();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }
