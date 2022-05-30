@@ -65,14 +65,30 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.Hold
         String timestamp = model.getTimestamp();
         String message = model.getMessage(); //if text message then contain message, if image message then contain url of the image stored in firebase storage
         String senderUid = model.getSender();
+        String messageType = model.getType();
 
         //convert time stamp to dd/mm/yyyy hh:mm am/pm
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(Long.parseLong(timestamp));
         String dateTime = DateFormat.format("dd/MM/yyyy hh:mm aa", cal).toString();
 
-
+        //set data
+        if (messageType.equals("text")){
+            //text message, hide messageIv, show messageTv
+            holder.messageIv.setVisibility(View.GONE);
+            holder.messageTv.setVisibility(View.VISIBLE);
             holder.messageTv.setText(message);
+        }
+        else {
+            //image message, hide messageTv, show messageIv
+            holder.messageIv.setVisibility(View.VISIBLE);
+            holder.messageTv.setVisibility(View.GONE);
+            try {
+                Picasso.get().load(message).placeholder(R.drawable.ic_image_black).into(holder.messageIv);
+            } catch (Exception e) {
+                holder.messageIv.setImageResource(R.drawable.ic_image_black);
+            }
+        }
 
         holder.timeTv.setText(dateTime);
 
