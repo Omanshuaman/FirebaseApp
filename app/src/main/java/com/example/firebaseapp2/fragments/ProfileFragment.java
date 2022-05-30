@@ -839,6 +839,7 @@ public class ProfileFragment extends Fragment {
         inflater.inflate(R.menu.menu_main, menu);
         //hide some options
         menu.findItem(R.id.action_create_group).setVisible(false);
+        menu.findItem(R.id.action_add_participant).setVisible(false);
 
         MenuItem item = menu.findItem(R.id.action_search);
         //v7 searchview ot search user specific posts

@@ -6,8 +6,9 @@
         android:id="@+id/action_logout"
         android:title="Logout" />
 
-    <item android:id="@+id/action_settings"
-        android:title="Settings"/>
+    <item
+        android:id="@+id/action_settings"
+        android:title="Settings" />
 
     <item
         android:id="@+id/action_search"
@@ -16,14 +17,21 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always" />
 
-    <item android:id="@+id/action_add_post"
+    <item
+        android:id="@+id/action_add_post"
+        android:icon="@drawable/ic_add_white"
         android:title="Add Post"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_add_white"/>
+        app:showAsAction="always" />
 
     <!--Show this option in ChatsFragment, UsersFragment and hide from others-->
-    <item android:id="@+id/action_create_group"
+    <item
+        android:id="@+id/action_create_group"
+        android:icon="@drawable/ic_creategroup_white"
         android:title="Create Group"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_creategroup_white" />
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_add_participant"
+        android:icon="@drawable/ic_addperson_white"
+        android:title="Add Group Participant"
+        app:showAsAction="always" />
 </menu>

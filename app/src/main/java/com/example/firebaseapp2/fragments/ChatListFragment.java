@@ -178,6 +178,18 @@ public class ChatListFragment extends Fragment {
         setHasOptionsMenu(true);//to show menu option in fragment
         super.onCreate(savedInstanceState);
     }
+    /*inflate options menu*/
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //inflating menu
+        inflater.inflate(R.menu.menu_main, menu);
+
+        //hide addpost icon from this fragment
+        menu.findItem(R.id.action_add_post).setVisible(false);
+        menu.findItem(R.id.action_add_participant).setVisible(false);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     /*handle menu item clicks*/
     @Override
