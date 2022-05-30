@@ -5,6 +5,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -81,23 +82,116 @@ public class GroupInfoActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        editGroupTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GroupInfoActivity.this, GroupEditActivity.class);
+                intent.putExtra("groupId", groupId);
+                startActivity(intent);
+            }
+        });
+
+        leaveGroupTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //if user is participant/admin: leave group
+                //if user is creator: delete group
+                String dialogTitle = "";
+                String dialogDescription = "";
+                String positiveButtonTitle = "";
+                if (myGroupRole.equals("creator")) {
+                    dialogTitle = "Delete Group";
+                    dialogDescription = "Are you sure you want to Delete group permanently?";
+                    positiveButtonTitle = "DELETE";
+                } else {
+                    dialogTitle = "Leave Group";
+                    dialogDescription = "Are you sure you want to Leave group permanently?";
+                    positiveButtonTitle = "LEAVE";
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(GroupInfoActivity.this);
+                builder.setTitle(dialogTitle)
+                        .setMessage(dialogDescription)
+                        .setPositiveButton(positiveButtonTitle, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (myGroupRole.equals("creator")) {
+                                    //im creator of group: delete group
+                                    deleteGroup();
+                                } else {
+                                    //im participant/admin: leave group
+                                    leaveGroup();
+                                }
+                            }
+                        })
+                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }
+        });
 
     }
 
+    private void leaveGroup() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Groups");
+        ref.child(groupId).child("Participants").child(firebaseAuth.getUid())
+                .removeValue()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        //group left successfully...
+                        Toast.makeText(GroupInfoActivity.this, "Group left successfully...", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(GroupInfoActivity.this, DashboardActivity.class));
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //failed to leave group
+                        Toast.makeText(GroupInfoActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void deleteGroup() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Groups");
+        ref.child(groupId)
+                .removeValue()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        //group deleted successfully...
+                        Toast.makeText(GroupInfoActivity.this, "Group successfully deleted...", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(GroupInfoActivity.this, DashboardActivity.class));
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //failed to delete group
+                        Toast.makeText(GroupInfoActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
     private void loadGroupInfo() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Groups");
         ref.orderByChild("groupId").equalTo(groupId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     //get group info
-                    String groupId = ""+ds.child("groupId").getValue();
-                    String groupTitle = ""+ds.child("groupTitle").getValue();
-                    String groupDescription = ""+ds.child("groupDescription").getValue();
-                    String groupIcon = ""+ds.child("groupIcon").getValue();
-                    String createdBy = ""+ds.child("createdBy").getValue();
-                    String timestamp = ""+ds.child("timestamp").getValue();
+                    String groupId = "" + ds.child("groupId").getValue();
+                    String groupTitle = "" + ds.child("groupTitle").getValue();
+                    String groupDescription = "" + ds.child("groupDescription").getValue();
+                    String groupIcon = "" + ds.child("groupIcon").getValue();
+                    String createdBy = "" + ds.child("createdBy").getValue();
+                    String timestamp = "" + ds.child("timestamp").getValue();
 
                     Calendar cal = Calendar.getInstance(Locale.ENGLISH);
                     cal.setTimeInMillis(Long.parseLong(timestamp));
@@ -131,9 +225,9 @@ public class GroupInfoActivity extends AppCompatActivity {
         ref.orderByChild("uid").equalTo(createBy).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds: dataSnapshot.getChildren()){
-                    String name = ""+ds.child("name").getValue();
-                    createdByTv.setText("Created by "+name +" on "+dateTime);
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String name = "" + ds.child("name").getValue();
+                    createdByTv.setText("Created by " + name + " on " + dateTime);
                 }
             }
 
@@ -151,20 +245,19 @@ public class GroupInfoActivity extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot ds: dataSnapshot.getChildren()){
-                            myGroupRole = ""+ds.child("role").getValue();
-                            actionBar.setSubtitle(firebaseAuth.getCurrentUser().getEmail() +" ("+myGroupRole+")");
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            myGroupRole = "" + ds.child("role").getValue();
+                            actionBar.setSubtitle(firebaseAuth.getCurrentUser().getEmail() + " (" + myGroupRole + ")");
 
-                            if (myGroupRole.equals("participant")){
+                            if (myGroupRole.equals("participant")) {
                                 editGroupTv.setVisibility(View.GONE);
                                 addParticipantTv.setVisibility(View.GONE);
                                 leaveGroupTv.setText("Leave Group");
-                            }
-                            else if (myGroupRole.equals("admin")){
+                            } else if (myGroupRole.equals("admin")) {
                                 editGroupTv.setVisibility(View.GONE);
                                 addParticipantTv.setVisibility(View.VISIBLE);
                                 leaveGroupTv.setText("Leave Group");
-                            } else  if (myGroupRole.equals("creator")){
+                            } else if (myGroupRole.equals("creator")) {
                                 editGroupTv.setVisibility(View.VISIBLE);
                                 addParticipantTv.setVisibility(View.VISIBLE);
                                 leaveGroupTv.setText("Delete Group");
@@ -189,16 +282,16 @@ public class GroupInfoActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userList.clear();
-                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     //get uid from Group > Participants
-                    String uid = ""+ds.child("uid").getValue();
+                    String uid = "" + ds.child("uid").getValue();
 
                     //get info of user using uid we got above
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
                     ref.orderByChild("uid").equalTo(uid).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds: dataSnapshot.getChildren()){
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 ModelUser modelUser = ds.getValue(ModelUser.class);
 
                                 userList.add(modelUser);
@@ -207,7 +300,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                             adapterParticipantAdd = new AdapterParticipantAdd(GroupInfoActivity.this, userList, groupId, myGroupRole);
                             //set adapter
                             participantsRv.setAdapter(adapterParticipantAdd);
-                            participantsTv.setText("Participants ("+userList.size()+")");
+                            participantsTv.setText("Participants (" + userList.size() + ")");
                         }
 
                         @Override
