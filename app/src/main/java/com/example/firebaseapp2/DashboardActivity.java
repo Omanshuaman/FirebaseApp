@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.firebaseapp2.fragments.AllGroupFragment;
 import com.example.firebaseapp2.fragments.ChatListFragment;
 import com.example.firebaseapp2.fragments.HomeFragment;
 import com.example.firebaseapp2.fragments.NotificationsFragment;
@@ -36,7 +37,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     String mUID;
 
-    private  BottomNavigationView navigationView;
+    private BottomNavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,12 +126,13 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void showMoreOptions() {
         //popup menu to show more options
-      //  PopupMenu popup = new PopupMenu(getActivity(), menuItemView);
+        //  PopupMenu popup = new PopupMenu(getActivity(), menuItemView);
 
         PopupMenu popupMenu = new PopupMenu(this, navigationView, Gravity.END);
         //items to show in menu
         popupMenu.getMenu().add(Menu.NONE, 0, 0, "Notifications");
         popupMenu.getMenu().add(Menu.NONE, 1, 0, "Group Chats");
+        popupMenu.getMenu().add(Menu.NONE, 2, 0, "All Group Chats");
 
         //menu clicks
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -154,6 +156,15 @@ public class DashboardActivity extends AppCompatActivity {
                     GroupChatsFragment fragment6 = new GroupChatsFragment();
                     FragmentTransaction ft6 = getSupportFragmentManager().beginTransaction();
                     ft6.replace(R.id.content, fragment6, "");
+                    ft6.commit();
+                } else if (id == 2) {
+                    //group chats clicked
+
+                    //Notifications fragment transaction
+                    actionBar.setTitle("All Group Chats");//change actionbar title
+                    AllGroupFragment fragment7 = new AllGroupFragment();
+                    FragmentTransaction ft6 = getSupportFragmentManager().beginTransaction();
+                    ft6.replace(R.id.content, fragment7, "");
                     ft6.commit();
                 }
                 return false;
